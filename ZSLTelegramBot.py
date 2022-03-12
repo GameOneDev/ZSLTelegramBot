@@ -1,3 +1,4 @@
+import answers
 import config
 import datetime
 from gpiozero import CPUTemperature
@@ -16,7 +17,7 @@ cpu = CPUTemperature()
 @dp.message_handler(content_types=['text'])
 async def get_text_messages(msg: types.Message):
     mssegx = msg.text.split(":", 2)
-    if msg.text.lower() == 'hello':
+    if msg.text.lower() in answers.user_answerstext_hello:
         await msg.answer('Hello! Cpu temperature: ' + str(cpu.temperature))
         await asyncio.sleep(5)
         await msg.answer('Cpu temperature: ' + str(cpu.temperature))
