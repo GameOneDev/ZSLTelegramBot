@@ -28,18 +28,21 @@ async def get_text_messages(msg: types.Message):
     elif len(mssegx) >= 2:
         alarm_hour = mssegx[0]
         alarm_minutes = mssegx[1]
-        alarm_text = mssegx[2]
+        try:
+            alarm_text = mssegx[2]
+        except:
+            alarm_text = " "
         await msg.answer("Time on server: " + str(datetime.datetime.now().hour) + ":" + str(datetime.datetime.now().minute) + ":" + str(datetime.datetime.now().second))
-        #await msg.answer(mssegx[0])
-        #await msg.answer(alarm_minutes)
         timer_hour_in_sec = (int(alarm_hour) - datetime.datetime.now().hour)*3600
         timer_min_in_sec = (int(alarm_minutes) - datetime.datetime.now().minute)*60
         timer_sec = timer_hour_in_sec + timer_min_in_sec - datetime.datetime.now().second
-        time_to_sleep = (60*abs((int(alarm_hour) - datetime.datetime.now().hour))) + abs((int(alarm_minutes) - datetime.datetime.now().minute))*60 - datetime.datetime.now().second
-        await msg.answer("Alarm set on " + str(timer_sec) + "sec")
-        await msg.answer("hour in sec: " + str(timer_hour_in_sec) + " minutes in sec: " + str(timer_min_in_sec))
-        await asyncio.sleep(timer_sec)
-        await msg.answer("!!!alarm!!!" + str(alarm_text))
+        if int(timer_sec) > 0 and int(alarm_hour) <= 24 and int(alarm_minutes) <= 60:
+            await msg.answer("hour in sec: " + str(timer_hour_in_sec) + " minutes in sec: " + str(timer_min_in_sec))
+            await msg.answer("Alarm set on " + str(timer_sec) + "sec")
+            await asyncio.sleep(timer_sec)
+            await msg.answer("!!!alarm!!!" + str(alarm_text))
+        else:
+            await msg.answer("Something is wrong(in 99% you write wrong alarm time)")
 
     elif msg.text.lower() == "info":
         await msg.answer("Time on server: " + str(datetime.datetime.now().hour) + ":" + str(datetime.datetime.now().minute) + ":" + str(datetime.datetime.now().second))
