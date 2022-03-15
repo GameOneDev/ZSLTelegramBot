@@ -1,2 +1,2 @@
 # ZSLTelegramBot
-Telegram botform my school
+Telegram bot for my school
