@@ -78,10 +78,6 @@ async def get_text_messages(msg: types.Message):
 
         if (time_hour_now < 10): time_hour_now = "0" + str(time_hour_now)
         if (time_min_now < 10): time_min_now = "0" + str(time_min_now)
-        sql1 = "SELECT koniec FROM Plan_lekcji_2PT"+" WHERE dzien LIKE "+str(day_of_week)
-        cursor.execute(sql1)
-        results1 = cursor.fetchall()
-        await msg.answer(str(results1[0])+"lection end")
         #syeta
         try:
             time_lekcja_now = (values.time_lekcja[msg_alarm_helper[1]])
