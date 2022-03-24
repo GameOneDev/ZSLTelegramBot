@@ -68,14 +68,20 @@ async def get_text_messages(msg: types.Message):
     elif msg_alarm_helper[0] == "plan":
         cursor = conn.cursor()
 
-        
+        msg_alarm_time = msg_alarm_helper[1].split(":", 1)
         day_of_week = datetime.datetime.today().weekday()+1 #day of week
         time_hour_now = datetime.datetime.today().hour
         time_min_now = datetime.datetime.today().minute
         
+        if (int(msg_alarm_time[0]) < 10): msg_alarm_time[0] = "0" + str(msg_alarm_time[0])
+        if (int(msg_alarm_time[1]) < 10): msg_alarm_time[1] = "0" + str(msg_alarm_time[1])
+
         if (time_hour_now < 10): time_hour_now = "0" + str(time_hour_now)
         if (time_min_now < 10): time_min_now = "0" + str(time_min_now)
-        
+        sql1 = "SELECT koniec FROM Plan_lekcji_2PT"+" WHERE dzien LIKE "+str(day_of_week)
+        cursor.execute(sql1)
+        results1 = cursor.fetchall()
+        await msg.answer(str(results1[0])+"lection end")
         #syeta
         try:
             time_lekcja_now = (values.time_lekcja[msg_alarm_helper[1]])
@@ -88,11 +94,35 @@ async def get_text_messages(msg: types.Message):
                 await msg.answer("error 404, time_lekcja or incorrect date")
 
         await msg.answer(str(time_lekcja_now)+"test")
-        sqlll = "SELECT "+time_lekcja_now+" FROM Plan_lekcji_2PT"+" WHERE dzien LIKE "+str(day_of_week)
-        cursor.execute(sqlll)#nerabotaet poczemuto
 
+
+        sql2 = "SELECT "+time_lekcja_now+" FROM Plan_lekcji_2PT"+" WHERE dzien LIKE "+str(day_of_week)
+        cursor.execute(sql2)
         results2 = cursor.fetchall()
-        await msg.answer(str(results2)+"db")
+        
+        #########
+        alarm_hour = msg_alarm_time[0]
+        alarm_minutes = msg_alarm_time[1]
+        #try to set alarm text
+        try:
+            alarm_text = results2
+        except:
+            alarm_text = " "
+        await msg.answer("Time on server: " + str(datetime.datetime.now().hour) + ":" + str(datetime.datetime.now().minute) + ":" + str(datetime.datetime.now().second))
+        timer_hour_in_sec = (int(alarm_hour) - datetime.datetime.now().hour)*3600
+        timer_min_in_sec = (45+int(alarm_minutes) - datetime.datetime.now().minute)*60
+        timer_day_in_sec = int(alarm_day)*86400
+        await msg.answer("day in sec: " + str(timer_day_in_sec) + ", hour in sec: " + str(timer_hour_in_sec) + ", minutes in sec: " + str(timer_min_in_sec))
+        timer_sec = timer_day_in_sec + timer_hour_in_sec + timer_min_in_sec - datetime.datetime.now().second#-30
+        await msg.answer("Alarm set on " + str(timer_sec) + "sec")
+        if int(timer_sec) > 0 and int(alarm_hour) <= 24 and int(alarm_minutes) <= 60:
+            await asyncio.sleep(timer_sec)
+            await msg.answer("Next lection: " + str(alarm_text))
+        else:
+            await msg.answer("Something is wrong(in 99% you write wrong alarm time)")
+        ##########
+        
+        await msg.answer(str(results2)+"db, "+alarm_hour+alarm_minutes)
 
     
     #################################################alarm command###############################################################
