@@ -37,6 +37,12 @@ async def get_text_messages(msg: types.Message):
     else:
         msg_alarm_time = msg_alarm_helper2[0].split(":", 1)
         alarm_day = 0
+    try:
+        alarm_hour = msg_alarm_time[0]
+        alarm_minutes = msg_alarm_time[1]
+        ifAlarm = True
+    except:
+        ifAlarm = False
     
     #bot answer on hello message
     if msg.text.lower() in values.user_answerstext_hello:
@@ -123,9 +129,8 @@ async def get_text_messages(msg: types.Message):
     
     #################################################alarm command###############################################################
     
-    elif len(msg_alarm_helper) >= 1 and len(msg_alarm_helper2) >= 0:
-        alarm_hour = msg_alarm_time[0]
-        alarm_minutes = msg_alarm_time[1]
+    elif len(msg_alarm_helper) >= 1 and len(msg_alarm_helper2) >= 0 and ifAlarm:
+        
         #try to set alarm text
         try:
             alarm_text = msg_alarm_helper[1]
