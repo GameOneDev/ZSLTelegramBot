@@ -70,7 +70,7 @@ async def get_text_messages(msg: types.Message):
         results = cursor.fetchall()
         await msg.answer(results)
         #conn.close()
-    #########"Plan Lekcji"#####################
+    ############################################"Plan Lekcji"################################################
     elif msg_alarm_helper[0] == "plan":
         cursor = conn.cursor()
 
@@ -86,12 +86,12 @@ async def get_text_messages(msg: types.Message):
         if (time_min_now < 10): time_min_now = "0" + str(time_min_now)
         #syeta
         try:
-            time_lekcja_now = (values.time_lekcja[msg_alarm_helper[1]])
+            time_lekcja_now = ("lekcja"+values.time_lekcja_table[msg_alarm_helper[1]])
             #if (time_lekcja_now < 10): time_lekcja_now = "0" + str(time_lekcja_now)
         except:
             try:
                 time_now = str(time_hour_now)+":"+str(time_min_now)
-                time_lekcja_now = (values.time_lekcja[time_now])
+                time_lekcja_now = ("lekcja"+(values.time_lekcja_table[time_now]+1))
             except:
                 await msg.answer("error 404, time_lekcja or incorrect date")
 
