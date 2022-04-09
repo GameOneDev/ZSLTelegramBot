@@ -74,33 +74,42 @@ async def get_text_messages(msg: types.Message):
     elif msg_alarm_helper[0] == "plan":
         cursor = conn.cursor()
 
-        msg_alarm_time = msg_alarm_helper[1].split(":", 1)
-        day_of_week = datetime.datetime.today().weekday()+1 #day of week
         time_hour_now = datetime.datetime.today().hour
         time_min_now = datetime.datetime.today().minute
-        
-        if (int(msg_alarm_time[0]) < 10): msg_alarm_time[0] = "0" + str(msg_alarm_time[0])
-        if (int(msg_alarm_time[1]) < 10): msg_alarm_time[1] = "0" + str(msg_alarm_time[1])
-
         if (time_hour_now < 10): time_hour_now = "0" + str(time_hour_now)
         if (time_min_now < 10): time_min_now = "0" + str(time_min_now)
-        #syeta
+
+        try:
+            msg_alarm_time = msg_alarm_helper[1].split(":", 1)
+            if (int(msg_alarm_time[0]) < 10): msg_alarm_time[0] = "0" + str(msg_alarm_time[0])
+            if (int(msg_alarm_time[1]) < 10): msg_alarm_time[1] = "0" + str(msg_alarm_time[1])
+        except:
+            await msg.answer("incorrect date")
+        
+        day_of_week = datetime.datetime.today().weekday()+1 #day of week
+        if (day_of_week > 5):
+            alarm_day = 8 - day_of_week
+            day_of_week = 1
+        
+
         try:
             time_lekcja_now = ("lekcja"+values.time_lekcja_table[msg_alarm_helper[1]])
-            #if (time_lekcja_now < 10): time_lekcja_now = "0" + str(time_lekcja_now)
+            await msg.answer(str(time_lekcja_now)+"test")
         except:
             try:
                 time_now = str(time_hour_now)+":"+str(time_min_now)
                 time_lekcja_now = ("lekcja"+(values.time_lekcja_table[time_now]+1))
+                await msg.answer(str(time_lekcja_now)+"test")
             except:
                 await msg.answer("error 404, time_lekcja or incorrect date")
+                time_lekcja_now = "None"
 
-        await msg.answer(str(time_lekcja_now)+"test")
+        
+        if not time_lekcja_now == "None":
+            sql2 = "SELECT "+time_lekcja_now+" FROM Plan_lekcji_2PT"+" WHERE dzien LIKE "+str(day_of_week)
+            cursor.execute(sql2)
+            results2 = cursor.fetchall()
 
-
-        sql2 = "SELECT "+time_lekcja_now+" FROM Plan_lekcji_2PT"+" WHERE dzien LIKE "+str(day_of_week)
-        cursor.execute(sql2)
-        results2 = cursor.fetchall()
         
         #########
         alarm_hour = msg_alarm_time[0]
