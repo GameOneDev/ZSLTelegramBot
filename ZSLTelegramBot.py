@@ -93,7 +93,7 @@ async def get_text_messages(msg: types.Message):
         
 
         try:
-            time_lekcja_now = ("lekcja"+values.time_lekcja_table[msg_alarm_helper[1]])
+            time_lekcja_now = ("lekcja"+str(int(values.time_lekcja_table[msg_alarm_helper[1]])+1))
             await msg.answer(str(time_lekcja_now)+"test")
         except:
             try:
@@ -124,7 +124,7 @@ async def get_text_messages(msg: types.Message):
         timer_min_in_sec = (45+int(alarm_minutes) - datetime.datetime.now().minute)*60
         timer_day_in_sec = int(alarm_day)*86400
         await msg.answer("day in sec: " + str(timer_day_in_sec) + ", hour in sec: " + str(timer_hour_in_sec) + ", minutes in sec: " + str(timer_min_in_sec))
-        timer_sec = timer_day_in_sec + timer_hour_in_sec + timer_min_in_sec - datetime.datetime.now().second#-30
+        timer_sec = timer_day_in_sec + timer_hour_in_sec + timer_min_in_sec - datetime.datetime.now().second + 60
         await msg.answer("Alarm set on " + str(timer_sec) + "sec")
         if int(timer_sec) > 0 and int(alarm_hour) <= 24 and int(alarm_minutes) <= 60:
             await asyncio.sleep(timer_sec)
@@ -133,7 +133,7 @@ async def get_text_messages(msg: types.Message):
             await msg.answer("Something is wrong(in 99% you write wrong alarm time)")
         ##########
         
-        await msg.answer(str(results2)+"db, "+alarm_hour+alarm_minutes)
+        await msg.answer(str(alarm_text)+"db, "+alarm_hour+alarm_minutes)
 
     
     #################################################alarm command###############################################################
