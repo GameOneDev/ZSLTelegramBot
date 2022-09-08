@@ -1,0 +1,21 @@
+CREATE TABLE "Plan_lekcji_2PT" (
+	"dzien"	INTEGER CHECK(7) UNIQUE,
+	"poczetek"	TEXT,
+	"koniec"	TEXT,
+	"lekcja1"	TEXT,
+	"lekcja2"	TEXT,
+	"lekcja3"	TEXT,
+	"lekcja4"	TEXT,
+	"lekcja5"	TEXT,
+	"lekcja6"	TEXT,
+	"lekcja7"	TEXT,
+	"lekcja8"	TEXT,
+	"lekcja9"	TEXT,
+	"lekcja10"	TEXT,
+	"lekcja11"	TEXT,
+	"lekcja12"	TEXT,
+	"lekcja13"	TEXT,
+	"lekcja14"	TEXT,
+	"lekcja15"	TEXT,
+	PRIMARY KEY("dzien" AUTOINCREMENT)
+);
